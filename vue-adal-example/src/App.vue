@@ -1,13 +1,25 @@
 <template>
-  <div id="app">
+  <div v-if="isAuthenticated" id="app">
     <img src="./assets/logo.png">
     <router-view/>
+    <h2><a href="#" v-on:click.stop="logOut()">Log out</a></h2>
   </div>
 </template>
 
 <script>
+import authentication from './authentication'
 export default {
-  name: 'app'
+  name: 'app',
+  computed: {
+    isAuthenticated() {
+      return authentication.isAuthenticated();
+    }
+  },
+  methods: {
+    logOut() {
+      authentication.signOut();
+    }
+  }
 }
 </script>
 
