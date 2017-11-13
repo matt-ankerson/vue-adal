@@ -21,7 +21,7 @@ const router = new Router({
 
 // Global route guard
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some(record => record.meta.requiresAuthentication)) {
     // this route requires auth, check if logged in
     if (authentication.isAuthenticated()) {
       // only proceed if authenticated.
