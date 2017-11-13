@@ -4,7 +4,7 @@ An example project showcasing usage of the excellent [ADAL JS](https://github.co
 ### ADAL wrapper module:
 `vue-adal-example/src/authentication/index.js`
 
-Set up configuration for your Azure Active Directory application:
+ADAL requires some configuration to integrate with an Azure Active Directory application:
 ``` JavaScript
 const config = {
   tenant: 'your aad tenant',
@@ -13,14 +13,16 @@ const config = {
   cacheLocation: 'localStorage'
 };
 ```
-The initialize function should be called on page load - before the app is created.
-Usage: `initialize().then(_ => {/* Create app */});`
+Initialise ADAL at page load - before the app is created.
+
+Usage: `initialize().then(_ => {/* Create vue app */});`
 ``` JavaScript
 initialize() {
   this.authenticationContext = new AuthenticationContext(config);
 
   return new Promise((resolve, reject) => {
-    if (this.authenticationContext.isCallback(window.location.hash) || window !== window.parent) {
+    if (this.authenticationContext.isCallback(window.location.hash) || 
+                                              window !== window.parent) {
       // redirect to the location specified in the url params.
       this.authenticationContext.handleWindowCallback();
     } else {
@@ -36,7 +38,7 @@ initialize() {
   });
 },
 ```
-Gets an access token for some resource (usually an API you want your SPA to consume). The resource identifier should be associated with another Azure Active Directory application which represents the resource you're requesting:
+You'll usually need to get an access token for some resource (usually an API you want your SPA to consume). The resource identifier should be associated with another Azure Active Directory application which represents the resource you're requesting:
 ``` JavaScript
 acquireToken() {
   return new Promise((resolve, reject) => {
@@ -50,13 +52,13 @@ acquireToken() {
   });
 },
 ```
-In the event that the current user has not accepted the permissions granted to access the requested resource - an interactive authentication request can be invoked with this function:
+In the event that something goes wrong (perhaps the user has not accepted the permissions granted to access the requested resource) - an interactive authentication request can be invoked with this function:
 ``` JavaScript
 acquireTokenRedirect() {
   this.authenticationContext.acquireTokenRedirect('resource id');
 },
 ```
-Verify whether the user has been properly authenticated:
+ADAL can be queried to determine whether the user has been properly authenticated:
 ``` JavaScript
 isAuthenticated() {
   // getCachedToken will only return a valid, non-expired token.
@@ -64,7 +66,9 @@ isAuthenticated() {
   return false;
 },
 ```
-Gets the current users JWT token/profile which will contain user information, assigned groups and app roles. Usage: `getUserProfile().then(profile => {/* Do something with the profile */});`
+It can be useful to get access to the current users JWT token/profile. This will contain user information, assigned groups, app roles and other handy things. 
+
+Usage: `getUserProfile().then(profile => {/* Do something with the profile */});`
 ``` JavaScript
 getUserProfile() {
   if (!this.userProfilePromise) {
