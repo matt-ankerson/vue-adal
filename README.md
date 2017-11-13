@@ -1,7 +1,18 @@
 # vue-adal
 An example project showcasing usage of the excellent [ADAL JS](https://github.com/AzureAD/azure-activedirectory-library-for-js) library in a Vue JS application.
 
-### ADAL wrapper module:
+### Build and run this sample:
+``` Bash
+cd './vue-adal-example'
+
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+```
+
+## ADAL wrapper module:
 `vue-adal-example/src/authentication/index.js`
 
 ADAL requires some configuration to integrate with an Azure Active Directory application:
@@ -89,7 +100,7 @@ signOut() {
 }
 ```
 
-### In the app's entry point:
+## In the app's entry point:
 `vue-adal-example/src/main.js`
 ``` JavaScript
 import Vue from 'vue'
@@ -115,7 +126,7 @@ auth.getUserProfile().then(profile => {
 });
 ``` 
 
-### Vue Router
+## Vue Router
 `vue-adal-example/src/router/index.js`
 
 * Enable history mode (disable usage of hashes (#) in the url).
@@ -157,7 +168,7 @@ router.beforeEach((to, from, next) => {
 });
 ```
 
-### In your Vue components
+## In your Vue components
 Use functions from ADAL in your Vue components to drive the view. i.e. - `v-if="isAuthenticated"`
 ``` JavaScript
 computed: {
@@ -172,7 +183,7 @@ methods: {
 }
 ```
 
-### Requesting an access token for a protected resource
+## Requesting an access token for a protected resource
 ADAL's `acquireToken` function can be used to get a valid token. The following example uses [Vue Resource](https://github.com/pagekit/vue-resource) to set up a http interceptor (not included in sample code).
 ``` JavaScript
 Vue.http.interceptors.push(function (request, next) {
