@@ -1,5 +1,16 @@
 # vue-adal
-An example project showcasing usage of the excellent [ADAL JS](https://github.com/AzureAD/azure-activedirectory-library-for-js) library in a Vue JS application.
+A sample Vue.js application showcasing usage of [ADAL JS](https://github.com/AzureAD/azure-activedirectory-library-for-js).
+
+The purpose of this example is to demonstrate usage of ADAL JS from the `adal-angular` module for managing authentication with Azure AD in the context of a typical Vue.js single page application.
+
+### Dependencies
+``` JavaScript
+"dependencies": {
+    "adal-angular": "^1.0.15",
+    "vue": "^2.5.2",
+    "vue-router": "^3.0.1"
+},
+```
 
 ### Build and run this sample:
 ``` Bash
@@ -117,9 +128,8 @@ authentication.initialize().then(_ => {
 
 Optional - save the user profile in a state store (like Vuex):
 ``` JavaScript
-auth.getUserProfile().then(profile => {
-  store.commit('SET_USER_PROFILE', { profile: profile });
-});
+let profile = getUserProfile();
+store.commit('SET_USER_PROFILE', { profile });
 ``` 
 
 ## Vue Router
