@@ -32,19 +32,21 @@ initialize() {
   this.authenticationContext = new AuthenticationContext(config);
 
   return new Promise((resolve, reject) => {
-    if (this.authenticationContext.isCallback(window.location.hash) || 
-                                              window !== window.parent) {
+    if (this.authenticationContext.isCallback(window.location.hash) || window.self !== window.top) {
       // redirect to the location specified in the url params.
       this.authenticationContext.handleWindowCallback();
-    } else {
-      var user = this.authenticationContext.getCachedUser();
-      if (user && window.parent === window && !window.opener) {
-        // great, we have a user.
-      } else {
-        // no user, kick off the sign in flow.
+    }
+    else {
+      // try pull the user out of local storage
+      let user = this.authenticationContext.getCachedUser();
+
+      if (user) {
+        resolve();
+      }
+      else {
+        // no user at all - go sign in.
         this.signIn();
       }
-      resolve();
     }
   });
 },
@@ -79,15 +81,9 @@ isAuthenticated() {
 ```
 It can be useful to get access to the current users JWT token/profile. This will contain user information, assigned groups, app roles and other handy things. 
 
-Usage: `getUserProfile().then(profile => {/* Do something with the profile */});`
 ``` JavaScript
 getUserProfile() {
-  if (!this.userProfilePromise) {
-    this.userProfilePromise = this.initialize().then(() => {
-      return this.authenticationContext.getCachedUser().profile;
-    });
-  }
-  return this.userProfilePromise;
+  return this.authenticationContext.getCachedUser().profile;
 },
 ```
 Wrapper functions to invoke log in and log out actions:

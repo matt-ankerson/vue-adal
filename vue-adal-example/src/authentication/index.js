@@ -9,7 +9,6 @@ const config = {
 
 export default {
   authenticationContext: null,
-  userProfilePromise: null,
   /**
    * @return {Promise}
    */
@@ -17,18 +16,21 @@ export default {
     this.authenticationContext = new AuthenticationContext(config);
 
     return new Promise((resolve, reject) => {
-      if (this.authenticationContext.isCallback(window.location.hash) || window !== window.parent) {
+      if (this.authenticationContext.isCallback(window.location.hash) || window.self !== window.top) {
         // redirect to the location specified in the url params.
         this.authenticationContext.handleWindowCallback();
-      } else {
-        var user = this.authenticationContext.getCachedUser();
-        if (user && window.parent === window && !window.opener) {
-          // great, we have a user.
-        } else {
-          // no user, kick off the sign in flow.
+      }
+      else {
+        // try pull the user out of local storage
+        let user = this.authenticationContext.getCachedUser();
+
+        if (user) {
+          resolve();
+        }
+        else {
+          // no user at all - go sign in.
           this.signIn();
         }
-        resolve();
       }
     });
   },
@@ -61,15 +63,10 @@ export default {
     return false;
   },
   /**
-   * @return {Promise.<Object>} An ADAL user profile object.
+   * @return An ADAL user profile object.
    */
   getUserProfile() {
-    if (!this.userProfilePromise) {
-      this.userProfilePromise = this.initialize().then(() => {
-        return this.authenticationContext.getCachedUser().profile;
-      });
-    }
-    return this.userProfilePromise;
+    return this.authenticationContext.getCachedUser().profile;
   },
   signIn() {
     this.authenticationContext.login();
